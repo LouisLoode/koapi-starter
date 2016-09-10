@@ -1,5 +1,5 @@
 # Starter KoApi
-
+[![Build Status](https://travis-ci.org/LouisLoode/koapi-starter.svg?branch=master)](https://travis-ci.org/LouisLoode/koapi-starter)
 ### Version
 0.0.2
 

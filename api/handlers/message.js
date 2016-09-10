@@ -153,7 +153,10 @@ hdlr.get = function *(next, params) {
 hdlr.post = function *(next){
   yield next;
   var error, request, result;
-  // console.log(this.request.body);
+  // passport.serialize
+  // console.log(request);
+  // console.log(this.req.user);
+  this.request.body.creator = this.req.user._id;
   try {
     var request = new Message(this.request.body);
     result = yield request.save();

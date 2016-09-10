@@ -56,7 +56,7 @@ ctrl.put = {
     type: 'json',
     failure: 400
   },
-  handler: [auth.Mine, messageHndlr.put]
+  handler: [auth.Jwt, messageHndlr.put]
 };
 
 // Need to fix

@@ -4,8 +4,10 @@ var path = require('path');
 var responseTime = require('koa-response-time');
 var logger = require('koa-logger');
 var cors = require('koa-cors');
-var ip = require('koa-ip');
 var session = require('koa-generic-session');
+
+var user = require('../api/models/user');
+var User = require('mongoose').model('User');
 
 var genres = require('./libs/responses');
 
@@ -17,11 +19,6 @@ module.exports = function(app, config, passport) {
     app.use(logger());
   }
 
-  app.use(ip({
-     whiteList: config.whitelist,
-     blackList: config.blacklist
-  }));
-
   app.use(cors());
 
   app.use(genres());
@@ -31,26 +28,18 @@ module.exports = function(app, config, passport) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-
-  // app.use(function *(next){
-  //   try {
-  //     yield next;
-  //   } catch (err) {
-  //     if (401 == err.status) {
-  //       this.status = 401;
-  //       this.body = 'Protected resource, use Authorization header to get access\n';
-  //     } else {
-  //       throw err;
-  //     }
+  // app.use(function *(next, req){
+  //
+  //   if(this.request.header.authorization != undefined){
+  //     // Need to get user data and push in context
+  //     // console.log(this);
+  //     console.log(this.user);
+  //     console.log(this.req.isAuthenticated);
+  //     // passport.serializeUser(this.request.header.authorization);
   //   }
+  //   yield next;
+  //
   // });
-
-  // app.use(bodyParser());
-//   app.use (function * (next) {
-//   console.log(this.request.body);
-// });
-
-
 
   app.use(responseTime());
 
