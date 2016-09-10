@@ -6,6 +6,8 @@ var logger = require('koa-logger');
 var cors = require('koa-cors');
 var ip = require('koa-ip');
 var session = require('koa-generic-session');
+// var csrf = require('koa-csrf');
+
 
 var genres = require('./libs/responses');
 
@@ -31,24 +33,17 @@ module.exports = function(app, config, passport) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // app.use(csrf());
 
   // app.use(function *(next){
-  //   try {
-  //     yield next;
-  //   } catch (err) {
-  //     if (401 == err.status) {
-  //       this.status = 401;
-  //       this.body = 'Protected resource, use Authorization header to get access\n';
-  //     } else {
-  //       throw err;
-  //     }
+  //
+  //   if(this.request.header.authorization != undefined){
+  //     // Need to get user data and push in context
+  //     console.log(request);
   //   }
+  //   yield next;
+  //
   // });
-
-  // app.use(bodyParser());
-//   app.use (function * (next) {
-//   console.log(this.request.body);
-// });
 
 
 

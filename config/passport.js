@@ -11,6 +11,7 @@ var User = require('mongoose').model('User');
 
 var opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
+// opts.jwtFromRequest = ExtractJwt.fromExtractors([ExtractJwt.fromAuthHeader(), ExtractJwt.fromUrlQueryParameter('token')]);
 
 
 var serialize = function(user, done) {
@@ -22,7 +23,6 @@ var deserialize = function(id, done) {
   // console.log(id);
   User.findById(id, done);
 };
-
 
 
 
