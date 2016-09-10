@@ -32,11 +32,5 @@ var specific = {
       }
     }
   };
-
-// See https://www.npmjs.com/package/koa-ip to config
-var ip = {
-  whitelist: [],
-  blacklist: []
-};
-
+  
 module.exports = _.merge(specific, ip);

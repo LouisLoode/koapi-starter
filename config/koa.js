@@ -4,9 +4,7 @@ var path = require('path');
 var responseTime = require('koa-response-time');
 var logger = require('koa-logger');
 var cors = require('koa-cors');
-var ip = require('koa-ip');
 var session = require('koa-generic-session');
-// var csrf = require('koa-csrf');
 
 
 var genres = require('./libs/responses');
@@ -33,8 +31,6 @@ module.exports = function(app, config, passport) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // app.use(csrf());
-
   // app.use(function *(next){
   //
   //   if(this.request.header.authorization != undefined){
@@ -44,8 +40,6 @@ module.exports = function(app, config, passport) {
   //   yield next;
   //
   // });
-
-
 
   app.use(responseTime());
 
