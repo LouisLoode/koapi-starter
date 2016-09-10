@@ -1,0 +1,22 @@
+{
+  "name": "Doc API - Starter KoAPI",
+  "version": "0.1.0",
+  "description": "Documentation for the KoAPI starter projects",
+  "title": "Doc - Starter KoAPI",
+  "url" : "http://localhost:3000",
+  "header": {
+    "title": "Install, config and run",
+    "filename": "./doc/header.md"
+  },
+  "footer": {
+    "title": "Thanks to",
+    "filename": "./doc/footer.md"
+  },
+  "order": [
+    "Messages"
+  ],
+  "template": {
+  	"withCompare": true,
+  	"withGenerator": true
+  }
+}

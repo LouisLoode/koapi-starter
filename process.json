@@ -1,0 +1,16 @@
+{
+  "apps" : [{
+    "name"       : "Api",
+    "script"     : "./app.js",
+    "watch"       : true,
+    "instances"  : 2,
+    "max_restarts" : 10,
+  },{
+    "name"        : "worker",
+    "script"      : "./worker.js",
+    "watch"       : true,
+    "instances"  : 2,
+    "exec_mode"  : "cluster",
+    "max_restarts" : 10
+  }]
+}

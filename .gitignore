@@ -1,0 +1,10 @@
+*.log
+.DS_Store
+.project
+.strong-pm
+node_modules
+logs
+doc/dist
+config/env/production.js
+tests/node_modules
+npm-debug.log
