@@ -1,9 +1,16 @@
 language: node_js
 node_js:
 - 4.4.0
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
 env:
   global:
-  - NODE_ENV=test
+  - NODE_ENV=test CXX=g++-4.8
 branches:
   only:
   - master

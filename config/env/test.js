@@ -32,5 +32,5 @@ var specific = {
       }
     }
   };
-  
-module.exports = _.merge(specific, ip);
+
+module.exports = _.merge(specific);

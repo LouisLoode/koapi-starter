@@ -155,7 +155,8 @@ hdlr.post = function *(next){
   var error, request, result;
   // passport.serialize
   // console.log(request);
-  // this.request.body.creator = 'test';
+  // console.log(this.req.user);
+  this.request.body.creator = this.req.user._id;
   try {
     var request = new Message(this.request.body);
     result = yield request.save();
