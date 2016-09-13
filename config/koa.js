@@ -23,20 +23,8 @@ module.exports = function(app, config, passport) {
   app.use(session());
 
   app.use(passport.initialize());
+  
   app.use(passport.session());
-
-  // app.use(function *(next, req){
-  //
-  //   if(this.request.header.authorization != undefined){
-  //     // Need to get user data and push in context
-  //     // console.log(this);
-  //     console.log(this.user);
-  //     console.log(this.req.isAuthenticated);
-  //     // passport.serializeUser(this.request.header.authorization);
-  //   }
-  //   yield next;
-  //
-  // });
 
   app.use(responseTime());
 
