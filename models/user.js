@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var queue = require('../../config/kue').kue;
+var queue = require('../config/kue').kue;
 var bcrypt = require('bcrypt');
 
 // set up a mongoose model

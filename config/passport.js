@@ -6,7 +6,7 @@ var JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 // var Strategy = require('passport-http-bearer').Strategy;
 var authenticator = require('./libs/authenticator');
-var user = require('../api/models/user');
+var user = require('../models/user');
 var User = require('mongoose').model('User');
 
 var opts = {}

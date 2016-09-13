@@ -6,6 +6,7 @@
 const koa = require('koa');
 const mongoose = require('mongoose');
 const passport = require('koa-passport');
+const _ = require('lodash');
 
 var app = module.exports = koa();
 
@@ -21,6 +22,13 @@ config.app.env = env;
 mongoose.connect('mongodb://' + config.db.mongo.host + ':' + config.db.mongo.port + '/' + config.db.mongo.database);
 mongoose.connection.on('error', function(err) {
   console.log(err);
+});
+
+var models = require('include-all')({
+    dirname     :  __dirname +'/models',
+    filter      :  /(.+)\.js$/,
+    excludeDirs :  /^\.(git|svn)$/,
+    optional    :  true
 });
 
 // Passport config
@@ -42,4 +50,10 @@ if (!module.parent) {
   app.listen(config.app.port);
   console.log('Server started, listening on port: ' + config.app.port);
 }
+
 console.log('Environment: ' + config.app.env);
+
+_.forEach(models, function(model, name){
+    console.log('registering model: '+name);
+    // require('./models/' + model);
+})

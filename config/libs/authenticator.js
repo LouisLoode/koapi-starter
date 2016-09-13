@@ -1,5 +1,5 @@
 'use strict';
-var user = require('../../api/models/user');
+var user = require('../../models/user');
 var User = require('mongoose').model('User');
 var co = require('co');
 

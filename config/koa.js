@@ -6,9 +6,6 @@ var logger = require('koa-logger');
 var cors = require('koa-cors');
 var session = require('koa-generic-session');
 
-var user = require('../api/models/user');
-var User = require('mongoose').model('User');
-
 var genres = require('./libs/responses');
 
 module.exports = function(app, config, passport) {
