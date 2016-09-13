@@ -24,13 +24,6 @@ mongoose.connection.on('error', function(err) {
   console.log(err);
 });
 
-var models = require('include-all')({
-    dirname     :  __dirname +'/models',
-    filter      :  /(.+)\.js$/,
-    excludeDirs :  /^\.(git|svn)$/,
-    optional    :  true
-});
-
 // Passport config
 require('./config/passport')(passport, config);
 
@@ -52,8 +45,3 @@ if (!module.parent) {
 }
 
 console.log('Environment: ' + config.app.env);
-
-_.forEach(models, function(model, name){
-    console.log('registering model: '+name);
-    // require('./models/' + model);
-})
