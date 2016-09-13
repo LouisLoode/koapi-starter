@@ -6,6 +6,7 @@
 const koa = require('koa');
 const mongoose = require('mongoose');
 const passport = require('koa-passport');
+const _ = require('lodash');
 
 var app = module.exports = koa();
 
@@ -42,4 +43,5 @@ if (!module.parent) {
   app.listen(config.app.port);
   console.log('Server started, listening on port: ' + config.app.port);
 }
+
 console.log('Environment: ' + config.app.env);
