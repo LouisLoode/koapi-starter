@@ -18,6 +18,7 @@ var config = require('./config/env/'+env);
 config.app.env = env;
 
 // Connexion to mongoose
+mongoose.Promise = global.Promise;
 //mongoose.connect('mongodb://' + config.db.mongo.user + ':' + config.db.mongo.pass + '@' + config.db.mongo.host + ':' + config.db.mongo.port + '/' + config.db.mongo.database);
 mongoose.connect('mongodb://' + config.db.mongo.host + ':' + config.db.mongo.port + '/' + config.db.mongo.database);
 mongoose.connection.on('error', function(err) {
