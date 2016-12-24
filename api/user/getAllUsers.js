@@ -3,25 +3,25 @@
 var router = require('koa-joi-router');
 var Joi = router.Joi;
 var auth = require('../../config/libs/policies.js');
-var messages = require('../../models/message');
 var mongoose = require('mongoose');
-var Message = mongoose.model('Message');
+var User = mongoose.model('User');
 var boom = require ('boom');
 
-var outputFieldsSecurity = 'name content created';
+var outputFieldsSecurity = 'username email rights avatar cover description location website created';
 
-// Handler
-var getAllMessageHdlr = function *(next){
+var getAllUsersHandler = function *(next){
   yield next;
   var error, result;
   try {
     var conditions = {};
     var query = this.request.query;
-    if (query.q) {
-      conditions = JSON.parse(query.q);
-    }
-    var builder = Message.find(conditions, outputFieldsSecurity);
+    // console.log(query);
+    // if (query.q) {
+    //   conditions = JSON.parse(query.q);
+    // }
+    var builder = User.find(conditions, outputFieldsSecurity);
     ['limit', 'skip', 'sort'].forEach(function(key){
+      // console.log(query[key]);
       if (query[key]) {
         builder[key](query[key]);
       }
@@ -33,17 +33,26 @@ var getAllMessageHdlr = function *(next){
   }
 };
 
-// Controller
 module.exports = {
   method: 'get',
-  path: '/messages',
-  handler: [auth.Jwt, getAllMessageHdlr]
+  path: '/users',
+  validate: {
+     query: {
+        limit: Joi.number().max(100),
+        skip: Joi.number(),
+        q: Joi.string().max(100),
+        sort: Joi.string()
+      },
+     failure: 400,
+   },
+  // handler: [auth.Jwt, userHndlr.list]
+  handler: getAllUsersHandler
 };
 
 /**
- * @api {get} /messages/ Get all the messages
- * @apiName ShowAllMessages
- * @apiGroup Messages
+ * @api {get} /users/ Get all the users
+ * @apiName ShowAllUsers
+ * @apiGroup Users
  * @apiVersion 0.0.1
  *
  * @apiSuccessExample {json} Success-Response:

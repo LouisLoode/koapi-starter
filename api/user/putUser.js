@@ -3,38 +3,34 @@
 var router = require('koa-joi-router');
 var Joi = router.Joi;
 var auth = require('../../config/libs/policies.js');
-var user = require('../../models/user');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var boom = require ('boom');
 
-var outputFieldsSecurity = 'username email rights pictures informations created';
+var outputFieldsSecurity = 'username email rights avatar cover description location website created';
 
-var put = function *(next, params, request){
+var putUserHandler = function *(next, params, request){
   yield next;
   var error, result;
-  try {
-    result = yield User.findByIdAndUpdate(this.params.id, this.request.body, {new: true}).exec();
-    //console.log(result);
-    if (result == null) {
-      return boom.notFound('missing');
-    } else {
-      this.status = 200;
-      return this.body = result;
+    try {
+      result = yield User.findByIdAndUpdate(this.req.user._id, this.request.body, {new: true, upsert:true}).exec();
+      //console.log(result);
+      if (result == null) {
+        return boom.notFound('missing');
+      } else {
+        this.status = 200;
+        return this.body = result;
+      }
+    } catch (error) {
+        return boom.wrap(error, 400);
     }
-  } catch (error) {
-      return boom.wrap(error, 400);
-  }
 };
 
 // Need to fix
 module.exports = {
   method: 'put',
-  path: '/user/:id',
+  path: '/user',
   validate: {
-    params: {
-      id: Joi.string().required()
-    },
     body: {
       username: Joi.string().min(3).max(30),
       email: Joi.string().email(),
@@ -47,8 +43,7 @@ module.exports = {
     type: 'json',
     failure: 400
   },
-  // handler: [authMeOrAdmin, userHndlr.put]
-  handler: put
+  handler: [auth.Jwt, putUserHandler]
 };
 
 

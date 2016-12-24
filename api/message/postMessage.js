@@ -10,12 +10,10 @@ var boom = require ('boom');
 
 var outputFieldsSecurity = 'name content created';
 
-var post = function *(next){
+// Handler
+var postMessageHandler = function *(next){
   yield next;
   var error, request, result;
-  // passport.serialize
-  // console.log(request);
-  // console.log(this.req.user);
   this.request.body.creator = this.req.user._id;
   try {
     var request = new Message(this.request.body);
@@ -39,7 +37,7 @@ module.exports = {
     },
     type: 'json'
   },
-  handler: [auth.Jwt, post]
+  handler: [auth.Jwt, postMessageHandler]
 };
 
 /**

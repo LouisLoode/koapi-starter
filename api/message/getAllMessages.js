@@ -10,50 +10,59 @@ var boom = require ('boom');
 
 var outputFieldsSecurity = 'name content created';
 
-var getOneMessageHandler = function *(next, params) {
+// Handler
+var getAllMessageHandler = function *(next){
   yield next;
   var error, result;
   try {
-    result = yield Message.findOne({ '_id': this.params.id}, outputFieldsSecurity).exec();
-    if (result == null) {
-      boom.notFound('missing');
-    } else {
-      this.status = 200;
-      return this.body = result;
-    }
+    var conditions = {};
+    var query = this.request.query;
+    // console.log(query);
+    // if (query.q) {
+    //   conditions = JSON.parse(query.q);
+    // }
+    var builder = Message.find(conditions, outputFieldsSecurity);
+    ['limit', 'skip', 'sort'].forEach(function(key){
+      if (query[key]) {
+        builder[key](query[key]);
+      }
+    })
+    result = yield builder.exec();
+    return this.body = result;
   } catch (error) {
-    boom.notFound('missing');
+     boom.wrap(error, 500);
   }
 };
 
-
+// Controller
 module.exports = {
   method: 'get',
-  path: '/message/:id',
+  path: '/messages',
   validate: {
-    params: {
-      id: Joi.string().required()
-    },
-    failure: 400,
-  },
-  handler: [auth.Jwt, getOneMessageHandler]
+     query: {
+        limit: Joi.number().max(100),
+        skip: Joi.number(),
+        q: Joi.string().max(100),
+        sort: Joi.string()
+      },
+     failure: 400,
+   },
+  handler: [auth.Jwt, getAllMessageHandler]
 };
 
 /**
- * @api {get} /message/:id Get a message
- * @apiName ShowOneMessage
+ * @api {get} /messages/ Get all the messages
+ * @apiName ShowAllMessages
  * @apiGroup Messages
  * @apiVersion 0.0.1
- *
- * @apiParam {String} id  Id of the message.
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *      {
  *        "meta": {
  *          "ok": true,
- *          "code": 200,
- *          "version": "0.0.1",
+ *          "code": 200
+ *          "version": "1.0.0",
  *          "now": "2016-05-08T17:04:22.926Z"
  *        },
  *        "data": {
@@ -65,16 +74,11 @@ module.exports = {
  *        }
  *      }
  *
- * @apiErrorExample {json} Error-Response
- *     HTTP/1.1 404 Not Found
- *      {
- *        "meta": {
- *          "ok": false,
- *          "code": 404,
- *          "message": "Not found",
- *          "version": "0.0.1",
- *          "now": "2016-05-08T17:04:22.926Z"
- *        }
- *      }
- *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "q": {"name":"john"},
+ *       "limit": 10,
+ *       "skip": 1,
+ *       "sort": -created
+ *     }
  */

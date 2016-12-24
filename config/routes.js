@@ -17,7 +17,7 @@ module.exports = function(app, config, passport) {
     for (var i = 0; i < routes.length; i++) {
         controllers.push(require('../'+routes[i]));
         general.route(controllers[i]);
-        if(config.app.env != 'production'){
+        if(config.server.env != 'production'){
           console.log('Registering route: '+routes[i]);
         }
     }

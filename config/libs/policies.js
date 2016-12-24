@@ -8,7 +8,7 @@ policies.Jwt = passport.authenticate('jwt', { session: false });
 
 // Need to add
 policies.Mine = function *(next) {
-  console.log(this.header.authorization);
+  console.log(this);
   // if(this.header.authorization){
     yield next;
   // } else {

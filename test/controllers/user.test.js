@@ -8,8 +8,18 @@ faker.locale = 'fr';
 
 var config = require('../../config/env/test');
 
+function aleatoire(size) {
+    var liste = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9"];
+    var result = '';
+    for (var i = 0; i < size; i++) {
+        result += liste[Math.floor(Math.random() * liste.length)];
+    }
+    return result;
+}
 
-var randomName = 'testueseSJ';
+
+var randomName = aleatoire(10);
+
 var randomEmail = faker.internet.email();
 var randomDescription = faker.lorem.paragraph();
 var randomLocation = faker.address.city();
@@ -22,12 +32,13 @@ function request() {
 
 // This agent refers to PORT where program is runninng.
 
-var server = supertest.agent(config.app.url);
-// console.log(config.app.url);
+var server = supertest.agent(config.server.url);
+// console.log(config.server.url);
 // UNIT test begin
 
 describe('CRUD User',function(){
   var id
+  var token
 
   it('register an user',function(done){
     // calling home page api
@@ -50,17 +61,42 @@ describe('CRUD User',function(){
         expect(res.body.data.username).to.eql(randomName)
         expect(res.body.data.email).to.eql(randomEmail)
         expect(res.body.data.rights.type).to.eql('user')
-        expect(res.body.data.informations.website).to.eql(null)
-        expect(res.body.data.informations.location).to.eql(null)
-        expect(res.body.data.informations.description).to.eql(null)
-        expect(res.body.data.pictures.cover).to.eql(null)
-        expect(res.body.data.pictures.avatar).to.eql(null)
+        // expect(res.body.data.website).to.eql(null)
+        // expect(res.body.data.location).to.eql(null)
+        // expect(res.body.data.description).to.eql(null)
+        // expect(res.body.data.cover).to.eql(null)
+        // expect(res.body.data.avatar).to.eql(null)
         id = res.body.data.id
-        //console.log(id);
         done();
     });
   });
 
+  it('login an user',function(done){
+    // calling home page api
+    server
+    request()
+    .post('/api/auth/login')
+    .send({
+        'email':randomEmail,
+        'password':'testtest'
+      })
+    .set('Content-Type', 'application/json')
+    .end(function(err,res){
+        // console.log(res.body)
+        // expect(res.body).to.not.be.empty();
+        expect(typeof res.body).to.eql('object')
+        expect(res.body.data.user).to.have.key('id')
+        expect(res.body.data).to.have.key('token')
+        expect(res.body.meta.code).to.eql(200)
+        expect(res.body.data.user.username).to.eql(randomName)
+        expect(res.body.data.user.email).to.eql(randomEmail)
+        expect(res.body.data.user.rights.type).to.eql('user')
+
+        token = res.body.data.token
+
+        done();
+    });
+  });
 
   it('get an user - 200',function(done){
     server
@@ -68,18 +104,18 @@ describe('CRUD User',function(){
     .get('/api/user/' + id)
     .set('Content-Type', 'application/json')
     .end(function(err,res){
-        //console.log(res.body)
+        // console.log(res.body)
         expect(res.body).to.not.be.empty();
         expect(typeof res.body).to.eql('object')
         expect(res.body.data).to.have.key('id');
         expect(res.body.data.id).to.eql(id)
         expect(res.body.meta.code).to.eql(200)
         expect(res.body.data.rights.type).to.eql('user')
-        expect(res.body.data.informations.website).to.eql(null)
-        expect(res.body.data.informations.location).to.eql(null)
-        expect(res.body.data.informations.description).to.eql(null)
-        expect(res.body.data.pictures.cover).to.eql(null)
-        expect(res.body.data.pictures.avatar).to.eql(null)
+        // expect(res.body.data.website).to.eql(null)
+        // expect(res.body.data.location).to.eql(null)
+        // expect(res.body.data.description).to.eql(null)
+        // expect(res.body.data.cover).to.eql(null)
+        // expect(res.body.data.avatar).to.eql(null)
         done();
     });
   });
@@ -117,7 +153,7 @@ describe('CRUD User',function(){
   it('update an user', function(done){
     server
     request()
-    .put('/api/user/' + id)
+    .put('/api/user')
     .send({
         'username': randomName+'update',
         'email': 'update'+randomEmail,
@@ -128,20 +164,23 @@ describe('CRUD User',function(){
         }
       })
     .set('Content-Type', 'application/json')
+    .set('Authorization', token)
     .end(function(err,res){
         expect(err).to.eql(null)
         expect(typeof res.body).to.eql('object')
         expect(res.body.data.username).to.eql(randomName + 'update')
         expect(res.body.data.email).to.eql('update'+randomEmail)
-        expect(res.body.data.informations.website).to.eql(randomUrl)
-        expect(res.body.data.informations.location).to.eql(randomLocation)
-        expect(res.body.data.informations.description).to.eql(randomDescription)
+        // expect(res.body.data.website).to.eql(randomUrl)
+        // expect(res.body.data.location).to.eql(randomLocation)
+        // expect(res.body.data.description).to.eql(randomDescription)
         expect(res.body.data.rights.type).to.eql('user')
-        expect(res.body.data.pictures.cover).to.eql(null)
-        expect(res.body.data.pictures.avatar).to.eql(null)
+        // expect(res.body.data.cover).to.eql(null)
+        // expect(res.body.data.avatar).to.eql(null)
+        id = res.body.data.id;
         done();
     });
   })
+
   it('checks an updated user', function(done){
       server
       request()
@@ -154,12 +193,12 @@ describe('CRUD User',function(){
         expect(res.body.data.id).to.eql(id)
         expect(res.body.data.username).to.eql(randomName + 'update')
         expect(res.body.data.email).to.eql('update'+randomEmail)
-        expect(res.body.data.informations.website).to.eql(randomUrl)
-        expect(res.body.data.informations.location).to.eql(randomLocation)
-        expect(res.body.data.informations.description).to.eql(randomDescription)
+        // expect(res.body.data.website).to.eql(randomUrl)
+        // expect(res.body.data.location).to.eql(randomLocation)
+        // expect(res.body.data.description).to.eql(randomDescription)
         expect(res.body.data.rights.type).to.eql('user')
-        expect(res.body.data.pictures.cover).to.eql(null)
-        expect(res.body.data.pictures.avatar).to.eql(null)
+        // expect(res.body.data.cover).to.eql(null)
+        // expect(res.body.data.avatar).to.eql(null)
         done()
       })
   })
