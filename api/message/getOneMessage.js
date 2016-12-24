@@ -10,13 +10,11 @@ var boom = require ('boom');
 
 var outputFieldsSecurity = 'name content created';
 
-var get = function *(next, params) {
+var getOneMessageHandler = function *(next, params) {
   yield next;
   var error, result;
   try {
-    //console.log(this.params.id);
     result = yield Message.findOne({ '_id': this.params.id}, outputFieldsSecurity).exec();
-    //console.log(result);
     if (result == null) {
       boom.notFound('missing');
     } else {
@@ -38,7 +36,7 @@ module.exports = {
     },
     failure: 400,
   },
-  handler: [auth.Jwt, get]
+  handler: [auth.Jwt, getOneMessageHandler]
 };
 
 /**

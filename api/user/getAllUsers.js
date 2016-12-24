@@ -3,24 +3,25 @@
 var router = require('koa-joi-router');
 var Joi = router.Joi;
 var auth = require('../../config/libs/policies.js');
-var user = require('../../models/user');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var boom = require ('boom');
 
-var outputFieldsSecurity = 'username email rights pictures informations created';
+var outputFieldsSecurity = 'username email rights avatar cover description location website created';
 
-var list = function *(next){
+var getAllUsersHandler = function *(next){
   yield next;
   var error, result;
   try {
     var conditions = {};
     var query = this.request.query;
-    if (query.q) {
-      conditions = JSON.parse(query.q);
-    }
+    // console.log(query);
+    // if (query.q) {
+    //   conditions = JSON.parse(query.q);
+    // }
     var builder = User.find(conditions, outputFieldsSecurity);
     ['limit', 'skip', 'sort'].forEach(function(key){
+      // console.log(query[key]);
       if (query[key]) {
         builder[key](query[key]);
       }
@@ -35,8 +36,17 @@ var list = function *(next){
 module.exports = {
   method: 'get',
   path: '/users',
+  validate: {
+     query: {
+        limit: Joi.number().max(100),
+        skip: Joi.number(),
+        q: Joi.string().max(100),
+        sort: Joi.string()
+      },
+     failure: 400,
+   },
   // handler: [auth.Jwt, userHndlr.list]
-  handler: list
+  handler: getAllUsersHandler
 };
 
 /**

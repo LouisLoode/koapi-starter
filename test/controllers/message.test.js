@@ -9,9 +9,18 @@ faker.locale = 'fr';
 var config = require('../../config/env/test');
 
 
+function aleatoire(size) {
+    var liste = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9"];
+    var result = '';
+    for (var i = 0; i < size; i++) {
+        result += liste[Math.floor(Math.random() * liste.length)];
+    }
+    return result;
+}
+
 var randomName = faker.commerce.productName();
 var randomContent = faker.lorem.paragraph();
-var randomNameUser = 'TestUserForMessage';
+var randomNameUser = aleatoire(10);
 var randomEmail = faker.internet.email();
 var randomDescription = faker.lorem.paragraph();
 var randomLocation = faker.address.city();
@@ -24,8 +33,8 @@ function request() {
 
 // This agent refers to PORT where program is runninng.
 
-var server = supertest.agent(config.app.url);
-// console.log(config.app.url);
+var server = supertest.agent(config.server.url);
+// console.log(config.server.url);
 // UNIT test begin
 
 describe('CRUD Message',function(){
@@ -54,11 +63,11 @@ describe('CRUD Message',function(){
         expect(res.body.data.username).to.eql(randomNameUser)
         expect(res.body.data.email).to.eql(randomEmail)
         expect(res.body.data.rights.type).to.eql('user')
-        expect(res.body.data.informations.website).to.eql(null)
-        expect(res.body.data.informations.location).to.eql(null)
-        expect(res.body.data.informations.description).to.eql(null)
-        expect(res.body.data.pictures.cover).to.eql(null)
-        expect(res.body.data.pictures.avatar).to.eql(null)
+        // expect(res.body.data.website).to.eql(null)
+        // expect(res.body.data.location).to.eql(null)
+        // expect(res.body.data.description).to.eql(null)
+        // expect(res.body.data.cover).to.eql(null)
+        // expect(res.body.data.avatar).to.eql(null)
         id_user = res.body.data.id
         //console.log(id);
         done();
@@ -71,7 +80,7 @@ describe('CRUD Message',function(){
     request()
     .post('/api/auth/login')
     .send({
-        'username':randomNameUser,
+        'email':randomEmail,
         'password':'testtest'
       })
     .set('Content-Type', 'application/json')

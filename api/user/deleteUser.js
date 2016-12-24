@@ -1,20 +1,18 @@
 'use strict';
 
+// var user = require('../../models/user');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
+var boom = require ('boom');
 var router = require('koa-joi-router');
 var Joi = router.Joi;
 var auth = require('../../config/libs/policies.js');
-var messages = require('../../models/message');
-var mongoose = require('mongoose');
-var Message = mongoose.model('Message');
-var boom = require ('boom');
 
-var outputFieldsSecurity = 'name content created';
-
-var del = function *(next, params){
+var deleteUserHandler = function *(next, params){
   yield next;
   var error, result;
   try {
-    result = yield Message.remove({ _id: this.params.id }).exec();
+    result = yield User.remove({ _id: this.params.id }).exec();
     this.status = 200;
     return this.body = result;
   } catch (error) {
@@ -25,23 +23,23 @@ var del = function *(next, params){
 // Need to fix
 module.exports = {
   method: 'delete',
-  path: '/message/:id',
+  path: '/user/:id',
   validate: {
     params: {
       id: Joi.string().required()
     },
     failure: 400,
   },
-  handler: [auth.Jwt, del]
+  handler: deleteUserHandler
 };
 
 /**
- * @api {del} /message/:id Delete a message
- * @apiName DeleteOneMessage
- * @apiGroup Messages
+ * @api {del} /user/:id Delete an user
+ * @apiName DeleteOneUser
+ * @apiGroup Users
  * @apiVersion 0.0.1
  *
- * @apiParam {String} id  Id of the message.
+ * @apiParam {String} id  Id of the user.
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK

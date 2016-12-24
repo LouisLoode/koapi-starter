@@ -1,51 +1,29 @@
 'use strict';
 
 var router = require('koa-joi-router');
-var Joi = router.Joi;
 var auth = require('../../config/libs/policies.js');
-var messages = require('../../models/message');
-var mongoose = require('mongoose');
-var Message = mongoose.model('Message');
-var boom = require ('boom');
+var Joi = router.Joi;
 
-
-var outputFieldsSecurity = 'name content created';
-
-
-// Handler
-var getAllMessageHdlr = function *(next){
+var infos = function *(next){
   yield next;
-  var error, result;
-  try {
-    var conditions = {};
-    var query = this.request.query;
-    if (query.q) {
-      conditions = JSON.parse(query.q);
-    }
-    var builder = Message.find(conditions, outputFieldsSecurity);
-    ['limit', 'skip', 'sort'].forEach(function(key){
-      if (query[key]) {
-        builder[key](query[key]);
-      }
-    })
-    result = yield builder.exec();
-    return this.body = result;
-  } catch (error) {
-     boom.wrap(error, 500);
-  }
+  var result;
+  this.status = 200;
+  return this.body = {
+    message: 'This came from the api server',
+    time: Date.now()
+  };
 };
 
-// Controller
 module.exports = {
   method: 'get',
-  path: '/messages',
-  handler: [auth.Jwt, getAllMessageHdlr]
+  path: '/auth/protected',
+  handler: [auth.Jwt, infos]
 };
 
 /**
- * @api {get} /messages/ Get all the messages
- * @apiName ShowAllMessages
- * @apiGroup Messages
+ * @api {get} /users/ Get all the users
+ * @apiName ShowAllUsers
+ * @apiGroup Users
  * @apiVersion 0.0.1
  *
  * @apiSuccessExample {json} Success-Response:

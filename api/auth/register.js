@@ -2,28 +2,27 @@
 
 var router = require('koa-joi-router');
 var Joi = router.Joi;
-var auth = require('../../config/libs/policies.js');
-var user = require('../../models/user');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var boom = require ('boom');
+// var boom = require ('boom');
 
 var outputFieldsSecurity = 'username email rights pictures informations created';
 
 // Handler
-var registerHdlr = function *(next){
+var registerHandler = function *(next){
  yield next;
  var error, data, request, result;
- // console.log(this.request.body);
  var data = this.request.body;
  if(data.password === data.password2){
    try {
      var request = new User(data);
      result = yield request.save();
      this.status = 200;
+    //  console.log(result);
      return this.body = result;
    } catch (error) {
-     return boom.wrap(error, 400);
+     this.status = 400;
+     return this.body = 'user already exist';
    }
  }else{
    this.status = 400;
@@ -44,13 +43,13 @@ module.exports = {
     },
     type: 'json'
   },
-  handler: registerHdlr
+  handler: registerHandler
 };
 
 /**
 * @api {post} /auth/register Create an user
-* @apiName AddUser
-* @apiGroup Users
+* @apiName Register
+* @apiGroup Auth
 * @apiVersion 0.0.1
 *
 * @apiParam {String} username  Username of the user.
