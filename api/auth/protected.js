@@ -1,42 +1,23 @@
 'use strict';
 
 var router = require('koa-joi-router');
-var Joi = router.Joi;
 var auth = require('../../config/libs/policies.js');
-var user = require('../../models/user');
-var mongoose = require('mongoose');
-var User = mongoose.model('User');
-var boom = require ('boom');
+var Joi = router.Joi;
 
-var outputFieldsSecurity = 'username email rights pictures informations created';
-
-var list = function *(next){
+var infos = function *(next){
   yield next;
-  var error, result;
-  try {
-    var conditions = {};
-    var query = this.request.query;
-    if (query.q) {
-      conditions = JSON.parse(query.q);
-    }
-    var builder = User.find(conditions, outputFieldsSecurity);
-    ['limit', 'skip', 'sort'].forEach(function(key){
-      if (query[key]) {
-        builder[key](query[key]);
-      }
-    })
-    result = yield builder.exec();
-    return this.body = result;
-  } catch (error) {
-     boom.wrap(error, 500);
-  }
+  var result;
+  this.status = 200;
+  return this.body = {
+    message: 'This came from the api server',
+    time: Date.now()
+  };
 };
 
 module.exports = {
   method: 'get',
-  path: '/users',
-  // handler: [auth.Jwt, userHndlr.list]
-  handler: list
+  path: '/auth/protected',
+  handler: [auth.Jwt, infos]
 };
 
 /**

@@ -3,14 +3,19 @@
     "name"       : "Api",
     "script"     : "./app.js",
     "watch"       : true,
-    "instances"  : 2,
+    "instances"  : 1,
     "max_restarts" : 10,
   },{
-    "name"        : "worker",
+    "name"       : "Sockets",
+    "script"     : "./socket.js",
+    "watch"       : true,
+    "instances"  : 1,
+    "max_restarts" : 10,
+  },{
+    "name"        : "Worker",
     "script"      : "./worker.js",
     "watch"       : true,
-    "instances"  : 2,
-    "exec_mode"  : "cluster",
+    "instances"  : 1,
     "max_restarts" : 10
   }]
 }

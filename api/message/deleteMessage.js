@@ -10,7 +10,7 @@ var boom = require ('boom');
 
 var outputFieldsSecurity = 'name content created';
 
-var del = function *(next, params){
+var deleteMessageHandler = function *(next, params){
   yield next;
   var error, result;
   try {
@@ -32,7 +32,7 @@ module.exports = {
     },
     failure: 400,
   },
-  handler: [auth.Jwt, del]
+  handler: [auth.Jwt, deleteMessageHandler]
 };
 
 /**

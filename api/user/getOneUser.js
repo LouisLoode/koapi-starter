@@ -2,21 +2,19 @@
 
 var router = require('koa-joi-router');
 var Joi = router.Joi;
-var auth = require('../../config/libs/policies.js');
 var user = require('../../models/user');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var boom = require ('boom');
 
-var outputFieldsSecurity = 'username email rights pictures informations created';
+var outputFieldsSecurity = 'username email rights avatar cover description location website created';
 
-var get = function *(next, params) {
+var getOneUserHandler = function *(next, params, request) {
   yield next;
-  var error, result;
+  var error, request, result;
   try {
-    //console.log(this.params.id);
+    // console.log(this.req.user);
     result = yield User.findOne({ '_id': this.params.id}, outputFieldsSecurity).exec();
-    //console.log(result);
     if (result == null) {
       boom.notFound('missing');
     } else {
@@ -37,7 +35,7 @@ module.exports = {
     },
     failure: 400,
   },
-  handler: get
+  handler: getOneUserHandler
 };
 
 

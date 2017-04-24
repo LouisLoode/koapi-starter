@@ -10,12 +10,11 @@ var boom = require ('boom');
 
 var outputFieldsSecurity = 'name content created';
 
-var put = function *(next, params, request){
+var putMessageHandler = function *(next, params, request){
   yield next;
   var error, result;
   try {
     result = yield Message.findByIdAndUpdate(this.params.id, this.request.body, {new: true}).exec();
-    //console.log(result);
     if (result == null) {
       return boom.notFound('missing');
     } else {
@@ -42,7 +41,7 @@ module.exports = {
     type: 'json',
     failure: 400
   },
-  handler: [auth.Jwt, put]
+  handler: [auth.Jwt, putMessageHandler]
 };
 
 /**

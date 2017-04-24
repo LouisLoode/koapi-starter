@@ -1,6 +1,6 @@
 'use strict';
 
-var user = require('../../models/user');
+// var user = require('../../models/user');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var boom = require ('boom');
@@ -8,9 +8,7 @@ var router = require('koa-joi-router');
 var Joi = router.Joi;
 var auth = require('../../config/libs/policies.js');
 
-var outputFieldsSecurity = 'username email rights pictures informations created';
-
-var del = function *(next, params){
+var deleteUserHandler = function *(next, params){
   yield next;
   var error, result;
   try {
@@ -32,7 +30,7 @@ module.exports = {
     },
     failure: 400,
   },
-  handler: del
+  handler: deleteUserHandler
 };
 
 /**

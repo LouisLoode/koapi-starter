@@ -12,7 +12,7 @@ function request() {
 
 // This agent refers to PORT where program is runninng.
 
-var server = supertest.agent(config.app.url);
+var server = supertest.agent(config.server.url);
 
 // UNIT test begin
 
@@ -21,7 +21,7 @@ describe('General unit test',function(){
   // #1 should return home page
 
   // it('should return code 200',function(done){
-  //   //console.log(config.app.port);
+  //   //console.log(config.server.port);
   //   // calling home page api
   //   server
   //   request()
